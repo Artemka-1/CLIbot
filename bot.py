@@ -130,6 +130,28 @@ def phone_username(args, book: AddressBook):
 def all_contacts(book: AddressBook):
     return str(book) if book.data else "No contacts found."
 
+def add_birthday(args, book: AddressBook):
+    if len(args) != 2:
+        return "Usage: add-birthday <name> <YYYY-MM-DD>"
+    name, bday = args
+    record = book.find(name)
+    if not record:
+        return "Contact not found."
+    try:
+        record.add_birthday(bday)
+        return f"Birthday for {name} added: {bday}"
+    except ValueError as e:
+        return str(e)
+
+def show_birthday(args, book: AddressBook):
+    if len(args) != 1:
+        return "Usage: show-birthday <name>"
+    name = args[0]
+    record = book.find(name)
+    if not record:
+        return "Contact not found."
+    return f"{name}'s birthday: {record.birthday}" if record.birthday else f"{name} has no birthday set."
+
 def main():
     book = AddressBook()
     print("Welcome to the assistant bot!")
@@ -139,6 +161,8 @@ def main():
         if command in ["close", "exit"]:
             print("Good bye!")
             break
+        elif command == "hello":
+            print("Hello! How can I help you?")
         elif command == "add":
             print(add_contact(args, book))
         elif command == "change":
@@ -147,15 +171,22 @@ def main():
             print(phone_username(args, book))
         elif command == "show" and args and args[0] == "all":
             print(all_contacts(book))
+        elif command == "add-birthday":
+            print(add_birthday(args, book))
+        elif command == "show-birthday":
+            print(show_birthday(args, book))
         elif command == "birthdays":
             upcoming = book.get_upcoming_birthdays()
             if upcoming:
                 for item in upcoming:
                     print(f"{item['name']} -> {item['birthday']}")
             else:
-                print("No upcoming birthdays in the next 7 days.")
+                print("No upcoming birthdays in next 7 days")
         else:
-            print("Invalid command.")
+            print("Invalid command")
+
+if __name__ == "__main__":
+    main()
 
 if __name__ == "__main__":
     main()

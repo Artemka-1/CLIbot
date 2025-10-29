@@ -9,20 +9,20 @@ class BaseView(ABC):
         pass
 
     @abstractmethod
-    def display_contacts(self, book: AddressBook) -> None:
+    def display_contacts(self, book: 'AddressBook') -> None:
         pass
+
 
 class ConsoleView(BaseView):
     def display_message(self, msg: str) -> None:
         print(msg)
 
-    def display_contacts(self, book: AddressBook) -> None:
+    def display_contacts(self, book: 'AddressBook') -> None:
         if not book.data:
             print("No contacts found.")
         else:
             for record in book.data.values():
                 print(record)
-
 
 
 def input_error(func):
@@ -38,7 +38,6 @@ def input_error(func):
         except TypeError:
             return "Incorrect type of arguments."
     return inner
-
 
 
 class Field:
@@ -141,12 +140,10 @@ class AddressBook(UserDict):
             next_bday = bday.replace(year=today.year)
             if next_bday < today:
                 next_bday = next_bday.replace(year=today.year + 1)
-
             if next_bday.weekday() == 5:
                 next_bday += timedelta(days=2)
             elif next_bday.weekday() == 6:
                 next_bday += timedelta(days=1)
-
             if 0 <= (next_bday - today).days <= 6:
                 result.append({
                     "name": record.name.value,
@@ -166,7 +163,6 @@ def load_data(filename="addressbook.pkl"):
             return pickle.load(f)
     except FileNotFoundError:
         return AddressBook()
-
 
 
 def parse_input(user_input: str):
@@ -234,7 +230,6 @@ def birthdays(args, book: AddressBook):
     if not upcoming:
         return "No upcoming birthdays in next 7 days."
     return "\n".join(f"{item['name']} -> {item['birthday']}" for item in upcoming)
-
 
 
 def main():
